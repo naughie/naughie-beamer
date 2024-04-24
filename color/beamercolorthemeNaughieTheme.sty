@@ -1,0 +1,83 @@
+\RequirePackage{xcolor}
+\ProvidesPackage{beamercolorthemeNaughieTheme}
+
+% Colours
+\definecolor{NaughieUIBase}{RGB}{44,62,80}
+\definecolor{NaughieUIBlue}{RGB}{37,142,190}
+\definecolor{NaughieUIGray}{RGB}{236,240,241}
+%\definecolor{NaughieUILightPink}{RGB}{255,182,193}
+\definecolor{NaughieUILightPink}{RGB}{243,216,231}
+\definecolor{NaughieUIPink}{RGB}{255,105,180}
+
+% The various palettes
+\setbeamercolor*{palette base}{fg=NaughieUIBase, bg=NaughieUIBase}
+\setbeamercolor*{palette primary}{fg=NaughieUILightPink, bg=NaughieUILightPink}
+\setbeamercolor*{palette secondary}{fg=NaughieUIBlue, bg=NaughieUIBlue}
+\setbeamercolor*{palette tertiary}{fg=NaughieUIPink, bg=NaughieUIPink}
+
+\setbeamercolor*{background canvas}{bg=white}
+
+% Text and headings
+\setbeamercolor*{normal text}{
+  use=palette base,
+  fg=palette base.fg
+}
+
+\setbeamercolor*{title page header}{use=normal text, parent=normal text}
+\setbeamercolor*{author}{use=normal text, parent=normal text}
+\setbeamercolor*{date}{use=normal text, parent=normal text}
+\setbeamercolor*{header text}{use=normal text, fg=normal text}
+
+\setbeamercolor*{section title}{use=normal text, parent=normal text}
+
+\setbeamercolor*{footline}{
+  use=palette tertiary,
+  fg=palette tertiary.fg
+}
+
+\setbeamercolor*{frame numbering}{use=footline, parent=footline}
+
+\setbeamercolor*{alerted text}{
+  use=palette secondary, fg=palette secondary.fg
+}
+
+\setbeamercolor*{frametitle}{use=alerted text, parent=alerted text}
+\setbeamercolor*{framesubtitle}{use=frametitle, parent=frametitle}
+
+% For the blocks
+\setbeamercolor*{block title}{
+  use={palette tertiary,background canvas},
+  fg=palette tertiary.fg,
+  bg=background canvas.bg
+}
+
+\setbeamercolor{block body}{
+  use=normal text,
+  parent=normal text
+}
+
+\setbeamercolor{block alerted title}{
+  use={palette secondary, background canvas},
+  fg=palette secondary.fg,
+  bg=background canvas.bg
+}
+
+\setbeamercolor{block alerted body}{
+  use=normal text,
+  parent=normal text
+}
+
+\setbeamercolor{block grey title}{
+  use={palette base, background canvas},
+  fg=palette base.fg,
+  bg=background canvas.bg
+}
+
+\setbeamercolor{block grey body}{
+  use=normal text,
+  parent=normal text
+}
+
+% Items
+\setbeamercolor{item}{use=palette secondary, fg=palette secondary.fg}
+\setbeamercolor{section in toc}{use=palette primary, fg=palette primary.fg}

@@ -1,0 +1,90 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerouterthemeNaughieTheme}
+\RequirePackage{etoolbox}
+\RequirePackage{calc}
+\RequirePackage{pgfopts}
+
+\pgfkeys{
+  /NaughieTheme/outer/numbering/.cd,
+    .is choice,
+    none/.code=\setbeamertemplate{frame numbering}[none],
+    counter/.code=\setbeamertemplate{frame numbering}[counter],
+    fraction/.code=\setbeamertemplate{frame numbering}[fraction],
+}
+
+\newcommand{\NaughieTheme@outer@setdefaults}{
+  \pgfkeys{/NaughieTheme/outer/.cd,
+    numbering=counter,
+  }
+}
+
+% Frame title
+\newlength{\NaughieTheme@frametitle@padding}
+\setlength{\NaughieTheme@frametitle@padding}{2.2ex}
+\newcommand{\NaughieTheme@frametitlestrut@start}{
+  \rule{0pt}{\NaughieTheme@frametitle@padding +%
+    \totalheightof{%
+      \ifcsdef{NaughieTheme@frametitleformat}{\NaughieTheme@frametitleformat X}{X}%
+    }%
+  }%
+}
+\newcommand{\NaughieTheme@frametitlestrut@end}{
+  \rule[-\NaughieTheme@frametitle@padding]{0pt}{\NaughieTheme@frametitle@padding}
+}
+\defbeamertemplate{frametitle}{NaughieTheme}{%
+  \nointerlineskip%
+  \begin{beamercolorbox}[%
+      wd=\paperwidth,%
+      sep=0pt,%
+      leftskip=2\NaughieTheme@frametitle@padding,%
+      rightskip=\NaughieTheme@frametitle@padding,%
+    ]{frametitle}%
+  \NaughieTheme@frametitlestrut@start%
+  \insertframetitle%
+  \nolinebreak%
+  \NaughieTheme@frametitlestrut@end%
+  {%
+    \ifx\insertframesubtitle\@empty%
+    \else%
+    {%
+      \vskip-.5ex\hskip.1ex%
+      \usebeamerfont{framesubtitle}%
+      \usebeamercolor[fg]{framesubtitle}%
+      \insertframesubtitle%
+      \strut\par%
+    }%
+    \fi
+  }%
+  \end{beamercolorbox}
+}
+
+% Frame numbering
+\defbeamertemplate{frame numbering}{none}{}
+\defbeamertemplate{frame numbering}{counter}{\insertframenumber}
+\defbeamertemplate{frame numbering}{fraction}{
+    \insertframenumber/\inserttotalframenumber
+  }
+
+% Frame footer
+\defbeamertemplate{footline}{plain}{%
+  \begin{beamercolorbox}[wd=\textwidth, sep=3ex]{footline}%
+    \usebeamerfont{page number in head/foot}%
+    \usebeamertemplate*{frame footer}
+    \hfill%
+    \usebeamercolor{frame numbering}
+    \usebeamertemplate*{frame numbering}
+  \end{beamercolorbox}%
+}
+
+\setbeamertemplate{frametitle}[NaughieTheme]
+\setbeamertemplate{footline}[plain]
+
+\AtBeginDocument{%
+  \apptocmd{\appendix}{%
+    \pgfkeys{%
+      /NaughieTheme/outer/.cd,
+      numbering=none}
+    }{}{}
+}
+\NaughieTheme@outer@setdefaults
+\ProcessPgfPackageOptions{/NaughieTheme/outer}

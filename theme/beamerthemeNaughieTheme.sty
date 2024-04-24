@@ -1,0 +1,39 @@
+% Requirement
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeNaughieTheme}
+\RequirePackage{etoolbox}
+\RequirePackage{tikz}
+\RequirePackage{pgfopts}
+
+\pgfkeys{/NaughieTheme/.cd,
+  .search also={
+    /NaughieTheme/outer,
+    /NaughieTheme/inner,
+  }
+}
+\usetikzlibrary{positioning,calc}
+
+% Settings
+\useinnertheme{NaughieTheme}
+\useoutertheme{NaughieTheme}
+\usecolortheme{NaughieTheme}
+\usefonttheme{NaughieTheme}
+
+\setbeamertemplate{navigation symbols}{}
+
+% Items
+\setbeamertemplate{enumerate items}[circle]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{sections/subsections in toc}[square]
+
+\pgfkeys{/NaughieTheme/.cd,
+  noslidenumbers/.code=\pgfkeysalso{outer/numbering=none},
+}
+
+\AtEndPreamble{%
+  \@ifpackageloaded{pgfplots}{%
+    \RequirePackage{pgfplotsthemetol}
+  }{}
+}
+
+\ProcessPgfOptions{/NaughieTheme}

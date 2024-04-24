@@ -1,0 +1,444 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerinnerthemeNaughieTheme}
+\RequirePackage{etoolbox}
+\RequirePackage{calc}
+\RequirePackage{pgfopts}
+\RequirePackage{xifthen}
+\RequirePackage{xparse}
+
+\usetikzlibrary{shapes.geometric}
+
+\newcommand{\NaughieTheme@inner@setshapetemplates}[2]{
+  \setbeamertemplate{background band shape}[#1]{#2}
+  \setbeamertemplate{title page band shape}[#1]{#2}
+  \setbeamertemplate{block corner shape}[#1]{#2}
+}
+
+\pgfkeys{
+  /NaughieTheme/inner/shape/.cd,
+    .is choice,
+    circle/.code=\NaughieTheme@inner@setshapetemplates{circle}{},
+    square/.code=\NaughieTheme@inner@setshapetemplates{regular polygon}{4},
+    pentagon/.code=\NaughieTheme@inner@setshapetemplates{regular polygon}{5},
+    hexagon/.code=\NaughieTheme@inner@setshapetemplates{regular polygon}{6},
+    septagon/.code=\NaughieTheme@inner@setshapetemplates{regular polygon}{7},
+    octagon/.code=\NaughieTheme@inner@setshapetemplates{regular polygon}{8},
+}
+
+\newcommand{\NaughieTheme@inner@setdefaults}{
+  \pgfkeys{/NaughieTheme/inner/.cd,
+    shape=circle,
+  }
+}
+
+% ---------- %
+% Background %
+% ---------- %
+
+\newcommand{\NaughieTheme@inner@background@shape}[2]{
+  \node[
+    fill=background canvas.bg,
+    #1,
+    inner sep=0,
+    minimum size=#2
+  ] at (midpoint) {};
+
+  \node[
+    draw=palette primary.fg,
+    thin,
+    #1,
+    inner sep=0,
+    minimum size=0.6*#2
+  ] at (midpoint) {};
+
+  \node[
+    fill=palette primary.fg,
+    thin,
+    #1,
+    inner sep=0,
+    minimum size=0.15*#2
+  ] at (midpoint) {};
+}
+
+\defbeamertemplate{background band shape}{circle}[1]
+{
+  \NaughieTheme@inner@background@shape{circle}{7pt}
+}
+
+\defbeamertemplate{background band shape}{regular polygon}[1]
+{
+  \ifthenelse{#1 < 5}{%
+    \NaughieTheme@inner@background@shape{regular polygon, regular polygon sides=#1}{10pt}%
+  }{%
+    \NaughieTheme@inner@background@shape{regular polygon, regular polygon sides=#1}{7pt}%
+  }
+}
+
+\setbeamertemplate{background}
+{
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+    \usebeamercolor{palette primary}
+    \usebeamercolor{normal text}
+    \usebeamercolor{background canvas}
+
+    \draw[
+      color=palette primary.fg,
+      thin,
+      rounded corners = 1pt
+    ] ([shift={(.1,.1)}] current bounding box.south west)
+      rectangle ([shift={(-.1,-.1)}] current bounding box.north east);
+
+    \clip[rounded corners=1pt] ([shift={(.1,.1)}] current bounding box.south west)
+      rectangle ([shift={(-.1,-.1)}] current bounding box.north east);
+
+    \fill[color=palette primary.fg] ([shift={(.1,.1)}] current bounding box.south west) -- +(.15,0) -- +(0,.15) -- cycle;
+    \fill[color=palette primary.fg] ([shift={(-.1,.1)}] current bounding box.south east) -- +(-.15,0) -- +(0,.15) -- cycle;
+    \fill[color=palette primary.fg] ([shift={(.1,-.1)}] current bounding box.north west) -- +(.15,0) -- +(0,-.15) -- cycle;
+
+    \fill[palette primary.fg]
+      ([shift={(0,-.75)}] current page.north east)
+      -- ([shift={(-.75,0)}] current page.north east)
+      -- +(-.25,0)
+      -- ([shift={(0,-1)}] current page.north east)
+      -- cycle;
+
+    \fill[palette primary.fg]
+      ([shift={(0,-.35)}] current page.north east)
+      -- ([shift={(-.35,0)}] current page.north east)
+      -- +(-.25,0)
+      -- ([shift={(0,-.6)}] current page.north east)
+      -- cycle;
+
+    \coordinate (midpoint) at
+      ($ ([shift={(0,-.675)}] current page.north east) !.5! ([shift={(-.675,0)}] current page.north east) $);
+
+    \usebeamertemplate{background band shape}
+
+  \end{tikzpicture}
+}
+
+% ----------------------- %
+% Title and section pages %
+% ----------------------- %
+
+\newcommand{\NaughieTheme@inner@titlepage@shape}[2]
+{
+  \node[
+    fill=background canvas.bg,
+    #1,
+    inner sep=0,
+    minimum size=#2
+  ] at (midpoint) {};
+
+  \node[
+    draw=palette primary.fg,
+    thick,
+    #1,
+    inner sep=0,
+    minimum size=0.7*#2
+  ] at (midpoint) {};
+
+  \node[
+    fill=palette primary.fg,
+    thin,
+    #1,
+    inner sep=0,
+    minimum size=0.14*#2
+  ] at (midpoint) {};
+}
+
+\defbeamertemplate{title page band shape}{circle}[1]
+{
+  \NaughieTheme@inner@titlepage@shape{circle}{1cm}
+}
+
+\defbeamertemplate{title page band shape}{regular polygon}[1]
+{
+  \ifthenelse{#1 < 5}{%
+    \NaughieTheme@inner@titlepage@shape{regular polygon, regular polygon sides=#1}{1.3cm}
+  }{%
+    \NaughieTheme@inner@titlepage@shape{regular polygon, regular polygon sides=#1}{1.1cm}
+  }
+}
+
+% I actually do not understand how or why this works, or how I would do this
+% without this \@nameuse command.
+% Source: https://tex.stackexchange.com/a/323638/39313
+\def\ps@footline@none{%
+  \setbeamertemplate{footline}{}%
+  \@nameuse{ps@footline}}
+
+\setbeamertemplate{title page}
+{ 
+  \thispagestyle{footline@none}
+  \begin{tikzpicture}[overlay,remember picture]
+    \usebeamercolor{normal text}
+    \usebeamercolor{palette primary}
+    \usebeamercolor{background canvas}
+
+    \clip
+      ([shift={(.1,.1)}] current page.south west) rectangle
+      ([shift={(-.1,-.1)}] current page.north east);
+
+    \fill[background canvas.bg] (current page.north east) rectangle +(-2,-2);
+
+    \draw[
+      color=palette primary.fg,
+      rounded corners = 1pt
+    ] ([shift={(-2.1,-.1)}] current page.north east) -- ++(2,0) -- +(0,-2);
+
+    \fill[palette primary.fg] ([shift={(-.1,-.1)}] current page.north east)
+      -- +(-.15,0) -- +(0,-.15) -- cycle;
+
+    \fill[palette primary.fg]
+      ([shift={(0,-3)}] current page.north west)
+      -- ([shift={(3,0)}] current page.north west)
+      -- +(2,0)
+      -- ([shift={(0,-5)}] current page.north west)
+      -- cycle;
+
+    \fill[palette primary.fg]
+      ([shift={(0,-5.5)}] current page.north west)
+      -- ([shift={(5.5,0)}] current page.north west)
+      -- +(2,0)
+      -- ([shift={(0,-7.5)}] current page.north west)
+      -- cycle;
+
+    \coordinate (midpoint) at
+      ($ ([shift={(0,-5.25)}] current page.north west) !.5! ([shift={(5.25,0)}] current page.north west) $);
+
+    \usebeamertemplate{title page band shape}
+
+    \coordinate (title corner) at
+      ([shift={(-2em,-2)}] current page.east);
+
+    \usebeamercolor{title page header}
+    \ifx\insertsubtitle\@empty%
+    % Insert title
+    {
+      \node[
+        text=fg,
+        anchor=south east,
+        align=right,
+        text width=10cm
+      ] at (title corner) {%
+        \usebeamerfont{title}\parbox{8.5cm}{{\raggedleft \inserttitle\par}}%
+      };%
+    }
+    \else%
+    % Insert subtitle, if one exists, doesn't work with overflow
+    {
+      \node[
+        text=fg,
+        anchor=south east,
+        align=right,
+        text width=10cm
+      ] at ([yshift=1em]title corner) {%
+        \usebeamerfont{title}\inserttitle \\[5pt]
+        \usebeamerfont{subtitle}\insertsubtitle
+      };%
+    }
+    \fi%
+
+    %Insert date
+    \usebeamercolor{date}
+    \node[
+      text=fg,
+      anchor=south east
+    ] (datenode) at 
+      ([shift={(-2em, 1em)}] current page.south east) {%
+      \usebeamerfont{date}\insertdate%
+    };
+
+    \usebeamercolor{author}
+    \node[
+      text=fg,
+      anchor=south east,
+      align=right] at (datenode.north east) (author) {%
+      \usebeamerfont{author}\insertauthor%
+      };
+
+    \ifx\insertinstitute\@empty%
+    \else%
+    \usebeamercolor{institute}
+    \node[
+      text=fg,
+      anchor=south west,
+      align=left
+    ] (institutenode) at
+      ([shift={(1em, 1em)}] current page.south west) {%
+      \usebeamerfont{institute}\insertinstitute%
+      };
+    \fi%
+      
+  \end{tikzpicture}
+}
+
+\setbeamertemplate{section page}
+{
+  \thispagestyle{footline@none}
+  \begingroup
+    \centering
+    \vskip1cm\par
+    \begin{beamercolorbox}[sep=12pt,center]{section title}
+      \usebeamerfont{section title}\insertsection\par
+    \end{beamercolorbox}
+  \endgroup
+}
+
+% ------------------ %
+% Block environments %
+% ------------------ %
+
+\newcommand{\NaughieTheme@inner@block@shape}[2]
+{
+  \node[
+    inner sep=0,
+    minimum size=#2,
+    fill=fg,
+    #1
+  ] at ([shift={(225:.12)}] BOXCONTENT.north east) {};
+}
+
+\defbeamertemplate{block corner shape}{circle}[1]
+{
+  \NaughieTheme@inner@block@shape{circle}{1.25pt}
+}
+
+\defbeamertemplate{block corner shape}{regular polygon}[1]
+{
+  \ifthenelse{#1 < 6}{%
+    \NaughieTheme@inner@block@shape{regular polygon, regular polygon sides=#1}{1.5pt}
+  }{%
+    \NaughieTheme@inner@block@shape{regular polygon, regular polygon sides=#1}{1.25pt}
+  }
+}
+
+\newcommand{\NaughieTheme@block@begin}[2]{%
+  \par\vskip\medskipamount%
+  \usebeamercolor{#1}
+  \usebeamercolor{#2}
+  \ifx\insertblocktitle\@empty\newcommand{\yskiplength}{1.5ex}
+  \else\newcommand{\yskiplength}{2ex}
+  \fi
+  \begin{tikzpicture}
+    \node [
+      draw=#1.fg,
+      fill=#2.bg,
+      inner sep = 1ex,
+      inner ysep = \yskiplength,
+      text width=\paperwidth - 2cm - 5ex, 
+      minimum width=\paperwidth - 2cm - 1ex,
+      rounded corners=1pt
+    ] (BOXCONTENT) \bgroup%
+    \begin{minipage}{\textwidth}
+    \usebeamerfont{beamer body}%
+    \usebeamercolor{#2}%
+}
+
+\newcommand{\NaughieTheme@block@end}[1]{%
+    \end{minipage}%
+    \egroup;
+    \usebeamercolor{#1}
+    \ifx\insertblocktitle\@empty
+    \else%
+    {
+      \node[
+        fill=#1.bg,
+        anchor=west,
+        text=#1.fg,
+        inner ysep = 1.5pt,
+        rounded corners
+      ] at ([shift={(5pt,0)}]BOXCONTENT.north west) {\insertblocktitle};
+    }
+    \fi
+
+    \clip[rounded corners = 1pt] (BOXCONTENT.south west) rectangle (BOXCONTENT.north east);
+
+    \fill[#1.fg] (BOXCONTENT.south west) -- +(.1,0) -- +(0,.1);
+    \fill[#1.fg] (BOXCONTENT.south east) -- +(-.1,0) -- +(0,.1);
+    \fill[#1.fg] (BOXCONTENT.north west) -- +(.1,0) -- +(0,-.1);
+    \fill[#1.fg] (BOXCONTENT.north east) -- +(-.1,0) -- +(0,-.1);
+
+    \usebeamercolor{#1}
+    \expandbeamertemplate{block corner shape}
+  \end{tikzpicture}
+  \vskip\smallskipamount
+}
+
+\setbeamertemplate{block begin}
+{
+  \NaughieTheme@block@begin{block title}{block body}
+}
+
+\setbeamertemplate{block end}
+{
+  \NaughieTheme@block@end{block title}
+}
+
+\setbeamertemplate{block alerted begin}
+{
+  \NaughieTheme@block@begin{block alerted title}{block alerted body}
+}
+
+\setbeamertemplate{block alerted end}
+{
+  \NaughieTheme@block@end{block alerted title}
+}
+
+\NewDocumentEnvironment{greyblock}{m}%
+{
+  \par\vskip\medskipamount%
+  \usebeamercolor{block grey title}
+  \usebeamercolor{block grey body}
+  \ifthenelse{\isempty{#1}}%
+    {\newcommand{\yskiplength}{1.5ex}}%
+    {\newcommand{\yskiplength}{2.0ex}}
+  \begin{tikzpicture}
+    \node [
+      draw=block grey title.fg,
+      fill=block grey body.bg,
+      inner sep = 1ex,
+      inner ysep = \yskiplength,
+      text width=\paperwidth - 2cm - 5ex, 
+      minimum width=\paperwidth - 2cm - 1ex,
+      rounded corners=1pt
+    ] (BOXCONTENT) \bgroup%
+    \begin{minipage}{\textwidth}
+    \usebeamerfont{beamer body}%
+    \usebeamercolor{block grey body}%
+}{
+    \end{minipage}%
+    \egroup;
+    \usebeamercolor{block grey title}
+    \ifthenelse{\isempty{#1}}%
+    {}%
+    {
+      \node [
+        fill=block grey title.bg,
+        anchor=west,
+        text=block grey title.fg,
+        inner ysep = 0pt,
+        rounded corners = 0pt
+      ] at ([shift={(5pt,0)}]BOXCONTENT.north west) {#1};}
+
+    \clip[rounded corners = 1pt] (BOXCONTENT.south west) rectangle (BOXCONTENT.north east);
+
+    \fill[block grey title.fg] (BOXCONTENT.south west) -- +(.1,0) -- +(0,.1);
+    \fill[block grey title.fg] (BOXCONTENT.south east) -- +(-.1,0) -- +(0,.1);
+    \fill[block grey title.fg] (BOXCONTENT.north west) -- +(.1,0) -- +(0,-.1);
+    \fill[block grey title.fg] (BOXCONTENT.north east) -- +(-.1,0) -- +(0,-.1);
+
+    \node[
+      inner sep=0,
+      minimum size=1pt,
+      fill=block grey title.fg,
+      circle
+    ] at ([shift={(225:.12)}] BOXCONTENT.north east) {};
+  \end{tikzpicture}
+  \vskip\smallskipamount
+}
+
+\NaughieTheme@inner@setdefaults
+\ProcessPgfPackageOptions{/NaughieTheme/inner}
